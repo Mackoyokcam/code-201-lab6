@@ -1,8 +1,5 @@
 'use strict';
 
-// For future use
-var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
 // Get the sum of array
 function getSum(array) {
   var total = 0;
@@ -13,7 +10,6 @@ function getSum(array) {
 }
 
 /* Store-location objects */
-
 var firstAndPike = {
   minCust: 23,
   maxCust: 65,
@@ -26,7 +22,7 @@ var firstAndPike = {
   render: function() {
     var firstAndPikeUl = document.getElementById('firstAndPike');
 
-    // Iterate over each day
+    // Iterate over each hour
     var hoursOpen = Math.abs(this.closeHour - this.openHour);
     for(var i = 0; i < hoursOpen; i++) {
       var liEl = document.createElement('li');
@@ -62,10 +58,7 @@ var seaTacAirport = {
     // Iterate over each day
     var hoursOpen = Math.abs(this.closeHour - this.openHour);
     for(var i = 0; i < hoursOpen; i++) {
-      // There are three parts to this process:
-      // 1. Create an element
       var liEl = document.createElement('li');
-      // 2. Give it content
       var numCookies = Math.round(this.avgCookie * this.generateRandom());
       var time;
       if (i + this.openHour <= 11) {
@@ -76,8 +69,6 @@ var seaTacAirport = {
         time = (this.openHour + i - 12) + 'pm';
       }
       liEl.textContent = time + ' ' + numCookies + ' cookies';
-      // 3. Append it to a certain place in the DOM
-      // parentElement.appendChild(childElement)
       seaTacUl.appendChild(liEl);
       this.totalCookies.push(numCookies);
     }
@@ -100,10 +91,7 @@ var seattleCenter = {
     // Iterate over each day
     var hoursOpen = Math.abs(this.closeHour - this.openHour);
     for(var i = 0; i < hoursOpen; i++) {
-      // There are three parts to this process:
-      // 1. Create an element
       var liEl = document.createElement('li');
-      // 2. Give it content
       var numCookies = Math.round(this.avgCookie * this.generateRandom());
       var time;
       if (i + this.openHour <= 11) {
@@ -114,8 +102,6 @@ var seattleCenter = {
         time = (this.openHour + i - 12) + 'pm';
       }
       liEl.textContent = time + ' ' + numCookies + ' cookies';
-      // 3. Append it to a certain place in the DOM
-      // parentElement.appendChild(childElement)
       seaCenterUl.appendChild(liEl);
       this.totalCookies.push(numCookies);
     }
@@ -135,13 +121,11 @@ var capitolHill = {
   },
   render: function() {
     var capitolHillUl = document.getElementById('capitolHill');
+
     // Iterate over each day
     var hoursOpen = Math.abs(this.closeHour - this.openHour);
     for(var i = 0; i < hoursOpen; i++) {
-      // There are three parts to this process:
-      // 1. Create an element
       var liEl = document.createElement('li');
-      // 2. Give it content
       var numCookies = Math.round(this.avgCookie * this.generateRandom());
       var time;
       if (i + this.openHour <= 11) {
@@ -152,8 +136,6 @@ var capitolHill = {
         time = (this.openHour + i - 12) + 'pm';
       }
       liEl.textContent = time + ' ' + numCookies + ' cookies';
-      // 3. Append it to a certain place in the DOM
-      // parentElement.appendChild(childElement)
       capitolHillUl.appendChild(liEl);
       this.totalCookies.push(numCookies);
     }
@@ -173,13 +155,9 @@ var alki = {
   },
   render: function() {
     var alkiUl = document.getElementById('alki');
-    // Iterate over each day
     var hoursOpen = Math.abs(this.closeHour - this.openHour);
     for(var i = 0; i < hoursOpen; i++) {
-      // There are three parts to this process:
-      // 1. Create an element
       var liEl = document.createElement('li');
-      // 2. Give it content
       var numCookies = Math.round(this.avgCookie * this.generateRandom());
       var time;
       if (i + this.openHour <= 11) {
@@ -190,8 +168,6 @@ var alki = {
         time = (this.openHour + i - 12) + 'pm';
       }
       liEl.textContent = time + ' ' + numCookies + ' cookies';
-      // 3. Append it to a certain place in the DOM
-      // parentElement.appendChild(childElement)
       alkiUl.appendChild(liEl);
       this.totalCookies.push(numCookies);
     }
@@ -199,6 +175,7 @@ var alki = {
   },
   totalCookies: [],
 };
+
 
 firstAndPike.render();
 seaTacAirport.render();
