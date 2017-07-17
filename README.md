@@ -1,2 +1,2 @@
-# code-201-lab6
+# cookie-stand
 Code Fellows lab 6
