@@ -27,6 +27,19 @@ body {
   background: url(cookies.jpg);
 }
 
+#reviews {
+  border: 4px solid black;
+  height: 640px;
+  width: 400px;
+  position: absolute;
+  left: 1425px;
+  background: cornsilk;
+  text-align: center;
+  padding: 20px;
+  overflow: scroll;
+  font-family: sans-serif;
+}
+
 img {
 }
 
@@ -42,11 +55,23 @@ nav li {
   display: inline;
   margin-right: 4em;
   position: relative;
-  top: -20px;
-  font-size: 20px;
+  font-size: 35px;
 }
 
 nav ul {
   display: inline;
   margin-left: 20%;
+}
+
+#comment {
+  font-size: 20px;
+}
+
+#author {
+  text-align: center;
+  font-size: 15px;
+  margin-top: 10px;
+}
+#review {
+  margin-top: 30px;
 }
