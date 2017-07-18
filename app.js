@@ -58,6 +58,7 @@ function Store(name, id, minCust, maxCust, avgCookie, openHour, closeHour) {
   this.hoursOpen = Math.abs(closeHour - openHour);
   this.totalCookies = [];
   this.customerCount = [];
+  this.totalTossers = [];
   this.generateRandom = function() {
     return Math.floor(Math.random() * (this.maxCust - this.minCust + 1)) + this.minCust;
   };
@@ -98,9 +99,14 @@ function Store(name, id, minCust, maxCust, avgCookie, openHour, closeHour) {
       this.totalCookies.push(numberOfCookies);
 
       // Render # of cookie tossers to be assigned at this hour.
-      staffTableDataElement.textContent = customers;
+      var cookieTossers = Math.ceil(customers / 20);
+      if (cookieTossers < 2) {
+        cookieTossers = 2;
+      }
+      staffTableDataElement.textContent = cookieTossers;
       staffRowElement.appendChild(staffTableDataElement);
       this.customerCount.push(customers);
+      this.totalTossers.push(cookieTossers);
     }
     // Render Total
     tableDataElement = document.createElement('td');
@@ -135,15 +141,22 @@ for (var key in storeList) {
 function renderHeader() {
   // Location
   var tableElement = document.getElementById(tableName);
+  var staffTableElement = document.getElementById('staff_data');
   var headerElement = document.createElement('th');
+  var staffHeaderElement = document.createElement('th');
   headerElement.textContent = 'Location';
+  staffHeaderElement.textContent = 'Location';
   tableElement.appendChild(headerElement);
+  staffTableElement.appendChild(staffHeaderElement);
 
   // Time
   for(var i = 0; i < hours.length; i++) {
     headerElement = document.createElement('th');
+    staffHeaderElement = document.createElement('th');
     headerElement.textContent = hours[i];
+    staffHeaderElement.textContent = hours[i];
     tableElement.appendChild(headerElement);
+    staffTableElement.appendChild(staffHeaderElement);
   }
 
   // Total
@@ -160,30 +173,46 @@ for(var i = 0; i < patStores.length; i++) {
 
 /* Render Total row */
 var finalTotal = 0;
+var staffFinalTotal = 0;
 // The word 'Totals'
 var tableElement = document.getElementById(tableName);
+var staffTableElement = document.getElementById('staff_data');
 var rowElement = document.createElement('td');
+var staffRowElement = document.createElement('td');
 rowElement.textContent = 'Totals';
+staffRowElement.textContent = 'Totals';
 tableElement.appendChild(rowElement);
+staffTableElement.appendChild(staffRowElement);
 
 // The data for total
 for(i = 0; i < hours.length; i++) {
   rowElement = document.createElement('td');
+  staffRowElement = document.createElement('td');
   rowElement.className = 'totals';
+  staffRowElement.className = 'totals';
   var totalCookiesPerHour = 0;
+  var totalCookieTossersPerHour = 0;
   for (var j = 0; j < patStores.length; j++) {
     totalCookiesPerHour += patStores[j].totalCookies[i];
+    totalCookieTossersPerHour += patStores[j].totalTossers[i];
   }
   rowElement.textContent = totalCookiesPerHour;
+  staffRowElement.textContent = totalCookieTossersPerHour;
   tableElement.appendChild(rowElement);
+  staffTableElement.appendChild(staffRowElement);
   finalTotal += totalCookiesPerHour;
+  staffFinalTotal += totalCookieTossersPerHour;
 }
 
 // The Final Total
 rowElement = document.createElement('td');
+staffRowElement = document.createElement('td');
 rowElement.id = 'final_total';
+staffRowElement.id = 'final_total';
 rowElement.textContent = finalTotal + ' cookies';
+staffRowElement.textContent = staffFinalTotal + ' Tossers';
 tableElement.appendChild(rowElement);
+staffTableElement.appendChild(staffRowElement);
 
 
 // Logic for displaying the time of day (Version 1)
