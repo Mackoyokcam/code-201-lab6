@@ -1,15 +1,29 @@
 * {
-  font-family: 'Baloo', cursive;
+  font-family: 'monospace';
 }
 table {
-	border: 10px solid black;
+	border: 5px solid black;
+  background-color: salmon;
 }
 td {
 	padding: 10px;
-	border-radius: 15px;
+	/*border-radius: 15px;*/
   border: 1px solid black;
+  background-color: white;
 }
 th {
-	background-color: navy;
+	background-color: salmon;
 	color: white;
+}
+
+#daily_location_total {
+  background-color: green;
+}
+
+.totals {
+  background-color: green;
+}
+
+#final_total {
+  background-color: blue;
 }
