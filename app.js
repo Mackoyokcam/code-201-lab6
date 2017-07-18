@@ -88,6 +88,7 @@ function Store(name, id, minCust, maxCust, avgCookie, openHour, closeHour) {
     }
     // Render Total
     tableDataElement = document.createElement('td');
+    tableDataElement.id = 'daily_location_total';
     tableDataElement.textContent = this.getCookieSum() + ' cookies';
     rowElement.appendChild(tableDataElement);
 
@@ -123,7 +124,7 @@ function renderHeader() {
 
   // Total
   headerElement = document.createElement('th');
-  headerElement.textContent = 'Total';
+  headerElement.textContent = 'Daily Location Total';
   tableElement.appendChild(headerElement);
 }
 renderHeader();
@@ -134,23 +135,31 @@ for(var i = 0; i < patStores.length; i++) {
 }
 
 /* Render Total row */
-
-// The word 'Total'
+var finalTotal = 0;
+// The word 'Totals'
 var tableElement = document.getElementById(tableName);
 var rowElement = document.createElement('td');
-rowElement.textContent = 'Total';
+rowElement.textContent = 'Totals';
 tableElement.appendChild(rowElement);
 
 // The data for total
 for(i = 0; i < hours.length; i++) {
   rowElement = document.createElement('td');
+  rowElement.className = 'totals';
   var totalCookiesPerHour = 0;
   for (var j = 0; j < patStores.length; j++) {
     totalCookiesPerHour += patStores[j].totalCookies[i];
   }
   rowElement.textContent = totalCookiesPerHour;
   tableElement.appendChild(rowElement);
+  finalTotal += totalCookiesPerHour;
 }
+
+// The Final Total
+rowElement = document.createElement('td');
+rowElement.id = 'final_total';
+rowElement.textContent = finalTotal + ' cookies';
+tableElement.appendChild(rowElement);
 
 // Logic for displaying the time of day (Version 1)
 // var time;
