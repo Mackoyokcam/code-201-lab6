@@ -106,19 +106,58 @@ for (var key in storeList) {
     currentStore.avgCookie, currentStore.openHour, currentStore.closeHour));
 }
 
-// Render Header
+/* Render Header row */
+function renderHeader() {
+  // Location
+  var tableElement = document.getElementById(tableName);
+  var headerElement = document.createElement('th');
+  headerElement.textContent = 'Location';
+  tableElement.appendChild(headerElement);
 
-      // Logic for displaying the time of day
-      // var time;
-      // if (i + this.openHour <= 11) {           // AM
-      //   time = (this.openHour + i) + 'am';
-      // } else if (i + this.openHour === 12) {  // Noon
-      //   time = (this.openHour + i) + 'pm';
-      // } else {                                // PM
-      //   time = (this.openHour + i - 12) + 'pm';
-      // }
+  // Time
+  for(var i = 0; i < hours.length; i++) {
+    headerElement = document.createElement('th');
+    headerElement.textContent = hours[i];
+    tableElement.appendChild(headerElement);
+  }
 
-// Render the stores
-for (var i = 0; i < patStores.length; i++) {
+  // Total
+  headerElement = document.createElement('th');
+  headerElement.textContent = 'Total';
+  tableElement.appendChild(headerElement);
+}
+renderHeader();
+
+/* Render the store rows */
+for(var i = 0; i < patStores.length; i++) {
   patStores[i].addToTable();
 }
+
+/* Render Total row */
+
+// The word 'Total'
+var tableElement = document.getElementById(tableName);
+var rowElement = document.createElement('td');
+rowElement.textContent = 'Total';
+tableElement.appendChild(rowElement);
+
+// The data for total
+for(i = 0; i < hours.length; i++) {
+  rowElement = document.createElement('td');
+  var totalCookiesPerHour = 0;
+  for (var j = 0; j < patStores.length; j++) {
+    totalCookiesPerHour += patStores[j].totalCookies[i];
+  }
+  rowElement.textContent = totalCookiesPerHour;
+  tableElement.appendChild(rowElement);
+}
+
+// Logic for displaying the time of day (Version 1)
+// var time;
+// if (i + this.openHour <= 11) {           // AM
+//   time = (this.openHour + i) + 'am';
+// } else if (i + this.openHour === 12) {  // Noon
+//   time = (this.openHour + i) + 'pm';
+// } else {                                // PM
+//   time = (this.openHour + i - 12) + 'pm';
+// }
