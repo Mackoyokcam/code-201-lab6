@@ -18,7 +18,6 @@ nav {
 }
 
 body {
-  border: 3px solid green;
   background-color: salmon;
 }
 
@@ -42,15 +41,16 @@ body {
 
 #background {
   border: 1px solid black;
-  width: 960px;
-  height: 640px;
-  margin: 0 auto;
-  background: url(cookies.jpg);
+  width: 1350px;
+  height: 759px;
+  margin-left: 50px;
+  margin-top: -412px;
+  background: url(pikeplace.jpg);
 }
 
 #reviews {
   border: 1px solid black;
-  height: 640px;
+  height: 375px;
   width: 400px;
   position: absolute;
   left: 1425px;
@@ -59,12 +59,14 @@ body {
   padding: 20px;
   overflow: scroll;
   font-family: sans-serif;
+  margin-top: -412px;
 }
 
 img {
 }
 input[type=submit] {
   height: 30px;
+  border: 2px solid black;
   border-radius: 15px;
   background-color: salmon; /* Green */
   color: white;
@@ -130,5 +132,48 @@ nav ul {
 
 #images {
   text-align: center;
-  margin-bottom: 100px;
+  margin-bottom: 25px;
+}
+
+#cookie_monster {
+  position: relative;
+  left: 975px;
+}
+
+#text_bubble {
+  position: relative;
+  left: 275px;
+  bottom: 275px;
+}
+
+#monster_speech {
+  position:relative;
+  left: 865px;
+  bottom: 415px;
+  width: 150px;
+  font-size: 25px;
+  font-family: 'Indie Flower', cursive;
+}
+
+#coupon {
+  width: 400px;
+  height: 300px;
+  border: 10px dashed black;
+  position: relative;
+  bottom: 575px;
+  left: 275px;
+  background-color: #C0BCB6;
+  text-align: center;
+  padding: 30px;
+}
+
+#coupon p {
+  font-size: 50px;
+  font-family: 'Anton', sans-serif;
+}
+
+#scissors {
+  position: absolute;
+  bottom: 100px;
+  left: 100px;
 }
