@@ -6,6 +6,10 @@
   margin: 0;
 }
 
+a {
+  text-decoration: none;
+}
+
 nav {
   width: 100%;
   border: 3px solid black;
@@ -15,12 +19,29 @@ nav {
 
 body {
   border: 3px solid green;
-  height: 1000px;
   background-color: salmon;
 }
 
+#cookies {
+  margin-bottom: 50px;
+}
+
+#salmon {
+  margin-bottom: 50px;
+}
+
+#plus {
+  margin-bottom: 100px;
+  margin-right: 20px;
+}
+
+#equals {
+  margin-bottom: 55px;
+  margin-left: 20px;
+}
+
 #background {
-  border: 4px solid black;
+  border: 1px solid black;
   width: 960px;
   height: 640px;
   margin: 0 auto;
@@ -28,7 +49,7 @@ body {
 }
 
 #reviews {
-  border: 4px solid black;
+  border: 1px solid black;
   height: 640px;
   width: 400px;
   position: absolute;
@@ -42,6 +63,22 @@ body {
 
 img {
 }
+input[type=submit] {
+  height: 30px;
+  border-radius: 15px;
+  background-color: salmon; /* Green */
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+input[type=text] {
+  border: 2px solid black;
+  width: 300px;
+  height: 30px;
+  border-radius: 15px;
+}
 
 nav h1 {
   position: relative;
@@ -53,14 +90,15 @@ nav h1 {
 
 nav li {
   display: inline;
-  margin-right: 4em;
+  margin-right: 50px;
   position: relative;
-  font-size: 35px;
+  font-size: 50px;
+  font-family: Allura;
 }
 
 nav ul {
   display: inline;
-  margin-left: 20%;
+  margin-left: 10%;
 }
 
 #comment {
@@ -74,4 +112,23 @@ nav ul {
 }
 #review {
   margin-top: 30px;
+}
+
+#stuff {
+  border: 1px solid black;
+  height: 288px;
+  width: 430px;
+  position: absolute;
+  left: 10px;
+  background: cornsilk;
+  text-align: center;
+  padding: 20px;
+  /*overflow: scroll;*/
+  font-family: sans-serif;
+  background: url("salmonbits.jpg");
+}
+
+#images {
+  text-align: center;
+  margin-bottom: 100px;
 }

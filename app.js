@@ -213,14 +213,3 @@ rowElement.textContent = finalTotal + ' cookies';
 staffRowElement.textContent = staffFinalTotal + ' Tossers';
 tableElement.appendChild(rowElement);
 staffTableElement.appendChild(staffRowElement);
-
-
-// Logic for displaying the time of day (Version 1)
-// var time;
-// if (i + this.openHour <= 11) {           // AM
-//   time = (this.openHour + i) + 'am';
-// } else if (i + this.openHour === 12) {  // Noon
-//   time = (this.openHour + i) + 'pm';
-// } else {                                // PM
-//   time = (this.openHour + i - 12) + 'pm';
-// }
