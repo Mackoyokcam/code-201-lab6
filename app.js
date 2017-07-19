@@ -6,7 +6,15 @@ var staffTableName = 'staff_data';
 var hours = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm'];
 var storeForm = document.getElementById('store_form');
 
-
+// Table globals
+var tableElement = document.getElementById(tableName);
+var staffTableElement = document.getElementById(staffTableName);
+var rowElement = document.createElement('tr');
+var staffRowElement = document.createElement('tr');
+var dataElement = document.createElement('td');
+var staffDataElement = document.createElement('td');
+var headerElement = document.createElement('th');
+var staffHeaderElement = document.createElement('th');
 
 var storeList = {
   'First and Pike': {
@@ -73,33 +81,40 @@ function Store(name, id, minCust, maxCust, avgCookie, openHour, closeHour) {
     }
     return total;
   };
+  this.getStaffSum = function() {
+    var total = 0;
+    for(var i = 0; i < this.totalTossers.length; i++) {
+      total += this.totalTossers[i];
+    }
+    return total;
+  };
   this.createRow = function() {
     // Return two row elements on this array.
     // 0 for cookie data, 1 for staff data
     var cookieAndStaffRow = [];
 
     // Get unordered list with store ID
-    var rowElement = document.createElement('tr');
-    var staffRowElement = document.createElement('tr');
+    rowElement = document.createElement('tr');
+    staffRowElement = document.createElement('tr');
 
     // Render store name
-    var tableDataElement = document.createElement('td');
-    var staffTableDataElement = document.createElement('td');
-    tableDataElement.textContent = this.name;
-    staffTableDataElement.textContent = this.name;
-    rowElement.appendChild(tableDataElement);
-    staffRowElement.appendChild(staffTableDataElement);
+    dataElement = document.createElement('td');
+    staffDataElement = document.createElement('td');
+    dataElement.textContent = this.name;
+    staffDataElement.textContent = this.name;
+    rowElement.appendChild(dataElement);
+    staffRowElement.appendChild(staffDataElement);
 
     // Iterate over each hour
     for (var i = 0; i < this.hoursOpen; i++) {
-      tableDataElement = document.createElement('td');
-      staffTableDataElement = document.createElement('td');
+      dataElement = document.createElement('td');
+      staffDataElement = document.createElement('td');
       var customers = this.generateRandom();
       var numberOfCookies = Math.round(this.avgCookie * customers);
 
       // Render cookies to be made for the hour
-      tableDataElement.textContent = numberOfCookies;
-      rowElement.appendChild(tableDataElement);
+      dataElement.textContent = numberOfCookies;
+      rowElement.appendChild(dataElement);
       this.totalCookies.push(numberOfCookies);
 
       // Render # of cookie tossers to be assigned at this hour.
@@ -107,16 +122,20 @@ function Store(name, id, minCust, maxCust, avgCookie, openHour, closeHour) {
       if (cookieTossers < 2) {
         cookieTossers = 2;
       }
-      staffTableDataElement.textContent = cookieTossers;
-      staffRowElement.appendChild(staffTableDataElement);
+      staffDataElement.textContent = cookieTossers;
+      staffRowElement.appendChild(staffDataElement);
       this.customerCount.push(customers);
       this.totalTossers.push(cookieTossers);
     }
     // Render Total
-    tableDataElement = document.createElement('td');
-    tableDataElement.id = 'daily_location_total';
-    tableDataElement.textContent = this.getCookieSum() + ' cookies';
-    rowElement.appendChild(tableDataElement);
+    dataElement = document.createElement('td');
+    staffDataElement = document.createElement('td');
+    dataElement.id = 'daily_location_total';
+    staffDataElement.id = 'daily_location_total';
+    dataElement.textContent = this.getCookieSum() + ' cookies';
+    staffDataElement.textContent = this.getStaffSum() + ' tossers';
+    rowElement.appendChild(dataElement);
+    staffRowElement.appendChild(staffDataElement);
 
     cookieAndStaffRow.push(rowElement);
     cookieAndStaffRow.push(staffRowElement);
@@ -124,8 +143,8 @@ function Store(name, id, minCust, maxCust, avgCookie, openHour, closeHour) {
     return cookieAndStaffRow;
   };
   this.addToTable = function() {
-    var tableElement = document.getElementById(tableName);
-    var staffTableElement = document.getElementById('staff_data');
+    tableElement = document.getElementById(tableName);
+    staffTableElement = document.getElementById(staffTableName);
     var result = this.createRow();
     tableElement.appendChild(result[0]);
     staffTableElement.appendChild(result[1]);
@@ -140,15 +159,13 @@ for (var key in storeList) {
 }
 
 /* Create some Tables! */
+tableElement = document.getElementById(tableName);
+staffTableElement = document.getElementById(staffTableName);
   // Header
 function renderHeader() {
   // Location
-  var tableElement = document.getElementById(tableName);
-  tableElement.innerHTML = '';
-  var staffTableElement = document.getElementById('staff_data');
-  staffTableElement.innerHTML = '';
-  var headerElement = document.createElement('th');
-  var staffHeaderElement = document.createElement('th');
+  headerElement = document.createElement('th');
+  staffHeaderElement = document.createElement('th');
   headerElement.textContent = 'Location';
   staffHeaderElement.textContent = 'Location';
   tableElement.appendChild(headerElement);
@@ -238,18 +255,32 @@ function handleFormSubmit(event) {
 
   var short = event.target; // shortcut for event.target
 
+  // All values
+  var location = short.location.value;
+  var minCustomer = short.min_customer.value;
+  var maxCustomer = short.max_customer.value;
+  var avgCookie = short.avg_cookie.value;
+
   event.preventDefault(); // gotta have it for this purpose. prevents page reload on a 'submit' event
 
-  // validation
+  // Blank validation
+  if (location === '' || minCustomer === '' || maxCustomer === '' || avgCookie === '') {
+    return alert('All fields are required.');
+  }
+
+  // Int validation
+  if (isNaN(minCustomer) || isNaN(maxCustomer)) {
+    return alert('Please enter integer values for customer inputs.');
+  }
+
+  // Float validation
+  if (isNaN(avgCookie)) {
+    return alert('Please enter decimal values for average cookie sales.');
+  }
 
   // Instantiate and add to global object
-  patStores.push(new Store(short.location.value,
-  'Beta',
-  parseInt(short.min_customer.value),
-  parseInt(short.max_customer.value),
-  parseFloat(short.avg_cookie.value),
-  6,
-  20));
+  patStores.push(new Store(short.location.value,'Beta', parseInt(short.min_customer.value),
+  parseInt(short.max_customer.value), parseFloat(short.avg_cookie.value), 6, 20));
 
   var totalRow = document.getElementById('theTotes');
   var staffTotalRow = document.getElementById('staffTheTotes');
@@ -259,8 +290,14 @@ function handleFormSubmit(event) {
   tableElement.removeChild(totalRow);
   staffTableElement.removeChild(staffTotalRow);
 
+  // Add new store
   patStores[patStores.length - 1].addToTable();
+
+  // Recalculate total
   renderTotal();
+
+  // Reset form
+  storeForm.reset();
 }
 
 // Event Listeners
