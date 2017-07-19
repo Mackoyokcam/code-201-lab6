@@ -2,7 +2,11 @@
 
 var patStores = [];
 var tableName = 'store_data'; // Match with table ID of sales.html
+var staffTableName = 'staff_data';
 var hours = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm'];
+var storeForm = document.getElementById('store_form');
+
+
 
 var storeList = {
   'First and Pike': {
@@ -136,12 +140,13 @@ for (var key in storeList) {
 }
 
 /* Create some Tables! */
-
-// Header
+  // Header
 function renderHeader() {
   // Location
   var tableElement = document.getElementById(tableName);
+  tableElement.innerHTML = '';
   var staffTableElement = document.getElementById('staff_data');
+  staffTableElement.innerHTML = '';
   var headerElement = document.createElement('th');
   var staffHeaderElement = document.createElement('th');
   headerElement.textContent = 'Location';
@@ -171,45 +176,92 @@ for(var i = 0; i < patStores.length; i++) {
   patStores[i].addToTable();
 }
 
+function renderTotal() {
 /* Render Total row */
-var finalTotal = 0;
-var staffFinalTotal = 0;
-// The word 'Totals'
-var tableElement = document.getElementById(tableName);
-var staffTableElement = document.getElementById('staff_data');
-var rowElement = document.createElement('td');
-var staffRowElement = document.createElement('td');
-rowElement.textContent = 'Totals';
-staffRowElement.textContent = 'Totals';
-tableElement.appendChild(rowElement);
-staffTableElement.appendChild(staffRowElement);
-
-// The data for total
-for(i = 0; i < hours.length; i++) {
-  rowElement = document.createElement('td');
-  staffRowElement = document.createElement('td');
-  rowElement.className = 'totals';
-  staffRowElement.className = 'totals';
-  var totalCookiesPerHour = 0;
-  var totalCookieTossersPerHour = 0;
-  for (var j = 0; j < patStores.length; j++) {
-    totalCookiesPerHour += patStores[j].totalCookies[i];
-    totalCookieTossersPerHour += patStores[j].totalTossers[i];
-  }
-  rowElement.textContent = totalCookiesPerHour;
-  staffRowElement.textContent = totalCookieTossersPerHour;
+  var finalTotal = 0;
+  var staffFinalTotal = 0;
+  // The word 'Totals'
+  var tableElement = document.getElementById(tableName);
+  var staffTableElement = document.getElementById('staff_data');
+  var rowElement = document.createElement('tr');
+  rowElement.id = 'theTotes';
+  var staffRowElement = document.createElement('tr');
+  staffRowElement.id = 'staffTheTotes';
+  var dataElement = document.createElement('td');
+  var staffDataElement = document.createElement('td');
+  dataElement.textContent = 'Totals';
+  staffDataElement.textContent = 'Totals';
+  rowElement.appendChild(dataElement);
+  staffRowElement.appendChild(staffDataElement);
   tableElement.appendChild(rowElement);
   staffTableElement.appendChild(staffRowElement);
-  finalTotal += totalCookiesPerHour;
-  staffFinalTotal += totalCookieTossersPerHour;
+
+  // The data for total
+  for(i = 0; i < hours.length; i++) {
+    dataElement = document.createElement('td');
+    staffDataElement = document.createElement('td');
+    dataElement.className = 'totals';
+    staffDataElement.className = 'totals';
+    var totalCookiesPerHour = 0;
+    var totalCookieTossersPerHour = 0;
+    for (var j = 0; j < patStores.length; j++) {
+      totalCookiesPerHour += patStores[j].totalCookies[i];
+      totalCookieTossersPerHour += patStores[j].totalTossers[i];
+    }
+    dataElement.textContent = totalCookiesPerHour;
+    staffDataElement.textContent = totalCookieTossersPerHour;
+    rowElement.appendChild(dataElement);
+    staffRowElement.appendChild(staffDataElement);
+    tableElement.appendChild(rowElement);
+    staffTableElement.appendChild(staffRowElement);
+    finalTotal += totalCookiesPerHour;
+    staffFinalTotal += totalCookieTossersPerHour;
+  }
+
+  // The Final Total
+  dataElement = document.createElement('td');
+  staffDataElement = document.createElement('td');
+  dataElement.id = 'final_total';
+  staffDataElement.id = 'final_total';
+  dataElement.textContent = finalTotal + ' cookies';
+  staffDataElement.textContent = staffFinalTotal + ' Tossers';
+  rowElement.appendChild(dataElement);
+  staffRowElement.appendChild(staffDataElement);
+  tableElement.appendChild(rowElement);
+  staffTableElement.appendChild(staffRowElement);
 }
 
-// The Final Total
-rowElement = document.createElement('td');
-staffRowElement = document.createElement('td');
-rowElement.id = 'final_total';
-staffRowElement.id = 'final_total';
-rowElement.textContent = finalTotal + ' cookies';
-staffRowElement.textContent = staffFinalTotal + ' Tossers';
-tableElement.appendChild(rowElement);
-staffTableElement.appendChild(staffRowElement);
+renderTotal();
+
+// Event Handlers
+function handleFormSubmit(event) {
+
+  var short = event.target; // shortcut for event.target
+
+  event.preventDefault(); // gotta have it for this purpose. prevents page reload on a 'submit' event
+
+  // validation
+
+  // Instantiate and add to global object
+  patStores.push(new Store(short.location.value,
+  'Beta',
+  parseInt(short.min_customer.value),
+  parseInt(short.max_customer.value),
+  parseFloat(short.avg_cookie.value),
+  6,
+  20));
+
+  var totalRow = document.getElementById('theTotes');
+  var staffTotalRow = document.getElementById('staffTheTotes');
+  var tableElement = document.getElementById(tableName);
+  var staffTableElement = document.getElementById(staffTableName);
+
+  tableElement.removeChild(totalRow);
+  staffTableElement.removeChild(staffTotalRow);
+
+  patStores[patStores.length - 1].addToTable();
+  renderTotal();
+}
+
+// Event Listeners
+storeForm.addEventListener('submit', handleFormSubmit);
