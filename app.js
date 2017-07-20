@@ -313,8 +313,8 @@ function handleFormSubmit(event) {
   // Check if updating
   if (updatingCheck(location)) {
     var numberData = 0;
-    var updateStore = document.getElementById(location); //Get cookie Row
-    var staffUpdateStore = document.getElementById('staff ' + location); //Get staff row
+    var updateStore = document.getElementById(location); //Get cookie row to be updated
+    var staffUpdateStore = document.getElementById('staff ' + location); //Get staff row to be updated
     updateStore.innerHTML = '';
     staffUpdateStore.innerHTML = '';
     dataElement = document.createElement('td');
@@ -323,7 +323,7 @@ function handleFormSubmit(event) {
     for(var i = 0; i < patStores.length; i++) {
       if (location === patStores[i].name) {
         theStore = patStores[i];
-        i = patStores.length;
+        i = patStores.length; //break
       }
     }
 
