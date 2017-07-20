@@ -69,6 +69,15 @@ function updatingCheck(location) {
   return false;
 }
 
+// First table data creationt
+function createData(data) {
+  dataElement = document.createElement('td');
+  staffDataElement = document.createElement('td');
+  dataElement.textContent = data;
+  staffDataElement.textContent = data;
+}
+
+// Store constructor
 function Store(name, id, minCust, maxCust, avgCookie, openHour, closeHour) {
   this.name = name;
   this.id = id;
@@ -304,8 +313,8 @@ function handleFormSubmit(event) {
   // Check if updating
   if (updatingCheck(location)) {
     var numberData = 0;
-    var updateStore = document.getElementById(location); //Get Row
-    var staffUpdateStore = document.getElementById('staff ' + location);
+    var updateStore = document.getElementById(location); //Get cookie Row
+    var staffUpdateStore = document.getElementById('staff ' + location); //Get staff row
     updateStore.innerHTML = '';
     staffUpdateStore.innerHTML = '';
     dataElement = document.createElement('td');
@@ -321,10 +330,7 @@ function handleFormSubmit(event) {
     theStore.minCust = parseInt(minCustomer);
     theStore.maxCust = parseInt(maxCustomer);
     theStore.avgCookie = parseFloat(avgCookie);
-    dataElement = document.createElement('td');
-    staffDataElement = document.createElement('td');
-    dataElement.textContent = location;
-    staffDataElement.textContent = location;
+    createData(location);
     updateStore.appendChild(dataElement);
     staffUpdateStore.appendChild(staffDataElement);
     for (i = 0; i < theStore.hoursOpen; i++) {
@@ -339,7 +345,7 @@ function handleFormSubmit(event) {
       staffDataElement.textContent = theStore.totalTossers[i];
       if (theStore.totalTossers[i] < 2) {
         theStore.totalTossers[i] = 2;
-        staffDataElemen.textContent = 2;
+        staffDataElement.textContent = 2;
       }
       staffUpdateStore.appendChild(staffDataElement);
     }
@@ -377,7 +383,7 @@ function handleFormSubmit(event) {
     patStores[patStores.length - 1].addToTable();
   }
 
-    // Recalculate total
+  // Recalculate total
   renderTotal();
 
   // Reset form
@@ -387,3 +393,4 @@ function handleFormSubmit(event) {
 
 // Event Listeners
 storeForm.addEventListener('submit', handleFormSubmit);
+// 390
