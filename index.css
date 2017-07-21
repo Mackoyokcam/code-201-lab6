@@ -10,6 +10,67 @@ a {
   text-decoration: none;
 }
 
+#pat_family {
+  margin-top: -200px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: 'Architects Daughter', cursive;
+}
+
+#family {
+  width: 40%;
+  margin-left: 5%;
+  display: line;
+}
+
+#store {
+  display: line;
+  position: relative;
+  border: 5px solid black;
+  width: 40%;
+  left: 1000px;
+  top: -485px;
+  height: 481px;
+  background-color: tan;
+}
+
+#store h3 {
+  position: relative;
+  top: 130px;
+  right: 250px;
+  font-size: 20px;
+}
+
+#store h4 {
+  position: relative;
+  left: 230px;
+  top: 375px;
+  font-size: 20px
+}
+
+#frost_cookie {
+  float:left;
+}
+
+#shirt {
+  float: right;
+  position: relative;
+  top: 125px;
+}
+
+#fishes {
+  border: 5px solid black;
+  background: hsl(213, 69.2%, 43.3%);
+  height: 500px;
+  margin-top: -250px;
+  border-radius: 500px;
+  text-align: center;
+}
+
+#fish1 {
+  margin-right: 100px;
+}
+
 nav {
   border: 3px solid black;
   margin-bottom: 50px;
@@ -197,6 +258,21 @@ footer ul {
 
 #scissors {
   position: absolute;
-  bottom: 100px;
+  bottom: 150px;
   left: 100px;
 }
+
+#cookie_cutter {
+  width: 300px;
+  height: 300px;
+  position: relative;
+  left: 1480px;
+  top: -300px;
+  border: 10px double white;
+  overflow: hidden;
+}
+/*hr {
+  height: 20px;
+  background-color: black;
+  margin-top: -100px;
+}*/
