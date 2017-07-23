@@ -84,6 +84,7 @@ var CookieStand = function(name, id, minCust, maxCust, avgCookie) {
   this.totalCookiesPerHour = [];
   this.totalTossersPerHour = [];
   this.customerCount = [];
+  CookieStand.all.push(this);
   this.generateRandom = function() {
     return Math.floor(Math.random() * (this.maxCust - this.minCust + 1)) + this.minCust;
   };
@@ -116,6 +117,8 @@ var CookieStand = function(name, id, minCust, maxCust, avgCookie) {
       staffTotal += this.totalTossersPerHour[i];
     }
     tableFunctions.createData(total, staffTotal);
+    dataElement.className = 'daily_location_total';
+    staffDataElement.className = 'daily_location_total';
     tableFunctions.addToRow();
   };
   this.renderAll = function() {
@@ -128,6 +131,8 @@ var CookieStand = function(name, id, minCust, maxCust, avgCookie) {
     tableFunctions.addToTable();
   };
 };
+
+CookieStand.all = [];
 
 // Instantiate objects
 for (var key in storeList) {
@@ -188,6 +193,8 @@ var renderFooter = function() {
       staffTotal += currentStore.totalTossersPerHour[i];
     }
     tableFunctions.createData(total, staffTotal);
+    dataElement.className = 'daily_location_total';
+    staffDataElement.className = 'daily_location_total';
     tableFunctions.addToRow();
     finalTotal += total;
     staffFinalTotal += staffTotal;
@@ -198,6 +205,8 @@ var renderFooter = function() {
 
   // The final total
   tableFunctions.createData(finalTotal, staffFinalTotal);
+  dataElement.id = 'final_total';
+  staffDataElement.id = 'final_total';
   tableFunctions.addToRow();
 
   tableFunctions.addToTable();
