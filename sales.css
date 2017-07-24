@@ -29,7 +29,7 @@ th {
 	color: white;
 }
 
-#daily_location_total {
+.daily_location_total {
   background-color: green;
 }
 

@@ -1,20 +1,19 @@
 'use strict';
 
-var patStores = [];
+var cookieStands = [];
 var tableName = 'store_data'; // Match with table ID of sales.html
-var staffTableName = 'staff_data';
+var staffTableName = 'staff_data'; // Match with staff table ID of sales.html
 var hours = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm'];
 var storeForm = document.getElementById('store_form');
 
 // Table globals
 var tableElement = document.getElementById(tableName);
 var staffTableElement = document.getElementById(staffTableName);
-var rowElement = document.createElement('tr');
-var staffRowElement = document.createElement('tr');
-var dataElement = document.createElement('td');
-var staffDataElement = document.createElement('td');
-var headerElement = document.createElement('th');
-var staffHeaderElement = document.createElement('th');
+
+var rowElement;
+var staffRowElement;
+var dataElement;
+var staffDataElement;
 
 var storeList = {
   'First and Pike': {
@@ -22,260 +21,213 @@ var storeList = {
     minCust: 23,
     maxCust: 65,
     avgCookie: 6.3,
-    openHour: 6,
-    closeHour: 20,
   },
   'SeaTac Airport': {
     id: 'seaTacAirport',
     minCust: 3,
     maxCust: 24,
     avgCookie: 1.2,
-    openHour: 6,
-    closeHour: 20,
   },
   'Seattle Center': {
     id: 'seattleCenter',
     minCust: 11,
     maxCust: 38,
     avgCookie: 3.7,
-    openHour: 6,
-    closeHour: 20,
   },
   'Capitol Hill': {
     id: 'capitolHill',
     minCust: 20,
     maxCust: 38,
     avgCookie: 2.3,
-    openHour: 6,
-    closeHour: 20,
   },
   'Alki': {
     id: 'alki',
     minCust: 2,
     maxCust: 16,
     avgCookie: 4.6,
-    openHour: 6,
-    closeHour: 20,
   }
 };
 
-// Check to see if form is being used to update existing store
-function updatingCheck(location) {
-  for(var i = 0; i < patStores.length; i++) {
-    if (location === patStores[i].name) {
-      return true;
-    }
+var tableFunctions = {
+  createDataElement: function(type, data, staffData) {
+    var dataElement = document.createElement(type);
+    dataElement.textContent = data;
+    var staffDataElement = document.createElement(type);
+    staffDataElement.textContent = staffData;
+    var rowElement = document.createElement('tr');
+    staffRowElement = document.createElement('tr');
+    rowElement.appendChild(dataElement);
+    staffRowElement.appendChild(staffDataElement);
+  },
+  createData: function(data, staffData) {
+    dataElement = document.createElement('td');
+    dataElement.textContent = data;
+    staffDataElement = document.createElement('td');
+    staffDataElement.textContent = staffData;
+  },
+  createHeaderData: function(data, staffData) {
+    dataElement = document.createElement('th');
+    dataElement.textContent = data;
+    staffDataElement = document.createElement('th');
+    staffDataElement.textContent = staffData;
+  },
+  addToRow: function() {
+    rowElement.appendChild(dataElement);
+    staffRowElement.appendChild(staffDataElement);
+  },
+  addToTable: function() {
+    tableElement.appendChild(rowElement);
+    staffTableElement.appendChild(staffRowElement);
   }
-  return false;
-}
+};
 
-// First table data creationt
-function createData(data) {
-  dataElement = document.createElement('td');
-  staffDataElement = document.createElement('td');
-  dataElement.textContent = data;
-  staffDataElement.textContent = data;
-}
-
-// Store constructor
-function Store(name, id, minCust, maxCust, avgCookie, openHour, closeHour) {
+function CookieStand(name, id, minCust, maxCust, avgCookie) {
   this.name = name;
   this.id = id;
   this.minCust = minCust;
   this.maxCust = maxCust;
   this.avgCookie = avgCookie;
-  this.openHour = openHour;
-  this.closeHour = closeHour;
-  this.hoursOpen = Math.abs(closeHour - openHour);
-  this.totalCookies = [];
+  this.totalCookiesPerHour = [];
+  this.totalTossersPerHour = [];
   this.customerCount = [];
-  this.totalTossers = [];
   this.generateRandom = function() {
     return Math.floor(Math.random() * (this.maxCust - this.minCust + 1)) + this.minCust;
   };
-  this.getCookieSum = function() {
-    var total = 0;
-    for(var i = 0; i < this.totalCookies.length; i++) {
-      total += this.totalCookies[i];
-    }
-    return total;
+  this.renderLocation = function() {
+    tableFunctions.createData(this.name, this.name);
+    tableFunctions.addToRow();
   };
-  this.getStaffSum = function() {
-    var total = 0;
-    for(var i = 0; i < this.totalTossers.length; i++) {
-      total += this.totalTossers[i];
-    }
-    return total;
-  };
-  this.createRow = function() {
-    // Return two row elements on this array.
-    // 0 for cookie data, 1 for staff data
-    var cookieAndStaffRow = [];
-
-    rowElement = document.createElement('tr');
-    rowElement.id = this.name;
-    staffRowElement = document.createElement('tr');
-    staffRowElement.id = 'staff ' + this.name;
-
-    // Render store name
-    dataElement = document.createElement('td');
-    staffDataElement = document.createElement('td');
-    dataElement.textContent = this.name;
-    staffDataElement.textContent = this.name;
-    rowElement.appendChild(dataElement);
-    staffRowElement.appendChild(staffDataElement);
-
-    // Iterate over each hour
-    for (var i = 0; i < this.hoursOpen; i++) {
-      dataElement = document.createElement('td');
-      staffDataElement = document.createElement('td');
-      var customers = this.generateRandom();
-      var numberOfCookies = Math.round(this.avgCookie * customers);
-
-      // Render cookies to be made for the hour
-      dataElement.textContent = numberOfCookies;
-      rowElement.appendChild(dataElement);
-      this.totalCookies.push(numberOfCookies);
-
-      // Render # of cookie tossers to be assigned at this hour.
-      var cookieTossers = Math.ceil(customers / 20);
-      if (cookieTossers < 2) {
-        cookieTossers = 2;
+  this.renderData = function() {
+    var cookies, tossers, random;
+    for (var i = 0; i < hours.length; i++) {
+      random = this.generateRandom();
+      cookies = Math.round(random * this.avgCookie);
+      tossers = Math.ceil(random / 20);
+      if (tossers < 2) {
+        tossers = 2;
       }
-      staffDataElement.textContent = cookieTossers;
-      staffRowElement.appendChild(staffDataElement);
-      this.customerCount.push(customers);
-      this.totalTossers.push(cookieTossers);
+      this.totalCookiesPerHour.push(cookies);
+      this.totalTossersPerHour.push(tossers);
+      this.customerCount.push(random);
+
+      tableFunctions.createData(cookies, tossers);
+      tableFunctions.addToRow();
     }
-    // Render Total
-    dataElement = document.createElement('td');
-    staffDataElement = document.createElement('td');
-    dataElement.id = 'daily_location_total';
-    staffDataElement.id = 'daily_location_total';
-    dataElement.textContent = this.getCookieSum() + ' cookies';
-    staffDataElement.textContent = this.getStaffSum() + ' tossers';
-    rowElement.appendChild(dataElement);
-    staffRowElement.appendChild(staffDataElement);
-
-    cookieAndStaffRow.push(rowElement);
-    cookieAndStaffRow.push(staffRowElement);
-
-    return cookieAndStaffRow;
   };
-  this.addToTable = function() {
-    tableElement = document.getElementById(tableName);
-    staffTableElement = document.getElementById(staffTableName);
-    var result = this.createRow();
-    tableElement.appendChild(result[0]);
-    staffTableElement.appendChild(result[1]);
+  this.renderTotal = function() {
+    var total = 0;
+    var staffTotal = 0;
+    for(var i = 0; i < hours.length; i++) {
+      total += this.totalCookiesPerHour[i];
+      staffTotal += this.totalTossersPerHour[i];
+    }
+    tableFunctions.createData(total, staffTotal);
+    dataElement.className = 'daily_location_total';
+    staffDataElement.className = 'daily_location_total';
+    tableFunctions.addToRow();
   };
-}
+  this.renderAll = function() {
+    tableFunctions.createRow();
+    rowElement.id = this.name;
+    staffRowElement.id = 'staff' + this.name;
+    this.renderLocation();
+    this.renderData();
+    this.renderTotal();
+    tableFunctions.addToTable();
+  };
+};
 
-// Create store instances
+// Instantiate objects
 for (var key in storeList) {
   var currentStore = storeList[key];
-  patStores.push(new Store(key, currentStore.id, currentStore.minCust, currentStore.maxCust,
-    currentStore.avgCookie, currentStore.openHour, currentStore.closeHour));
+  cookieStands.push(new CookieStand(key, currentStore.id, currentStore.minCust, currentStore.maxCust, currentStore.avgCookie));
 }
 
-/* Create some Tables! */
-tableElement = document.getElementById(tableName);
-staffTableElement = document.getElementById(staffTableName);
-  // Header
-function renderHeader() {
+/* ----------------------- RENDERING --------------------------*/
+
+// Header
+var renderHeader = function() {
+  tableFunctions.createRow();
+
   // Location
-  rowElement = document.createElement('tr');
-  staffRowElement = document.createElement('tr');
-  headerElement = document.createElement('th');
-  staffHeaderElement = document.createElement('th');
-  headerElement.textContent = 'Location';
-  staffHeaderElement.textContent = 'Location';
-  rowElement.appendChild(headerElement);
-  staffRowElement.appendChild(staffHeaderElement);
+  tableFunctions.createHeaderData('Location', 'Location');
+  tableFunctions.addToRow();
 
   // Time
-  for(var i = 0; i < hours.length; i++) {
-    headerElement = document.createElement('th');
-    staffHeaderElement = document.createElement('th');
-    headerElement.textContent = hours[i];
-    staffHeaderElement.textContent = hours[i];
-    rowElement.appendChild(headerElement);
-    staffRowElement.appendChild(staffHeaderElement);
-  }
+  hours.forEach(function(hour) {
+    console.log('Hour: ' + hour);
+    tableFunctions.createHeaderData(hour, hour);
+    tableFunctions.addToRow();
+  });
 
   // Total
-  headerElement = document.createElement('th');
-  staffHeaderElement = document.createElement('th');
-  headerElement.textContent = 'Daily Location Total';
-  staffHeaderElement.textContent = 'Daily Location Total';
-  rowElement.appendChild(headerElement);
-  staffRowElement.appendChild(staffHeaderElement);
-  tableElement.appendChild(rowElement);
-  staffTableElement.appendChild(staffRowElement);
-}
-renderHeader();
+  tableFunctions.createHeaderData('Daily Location Total', 'Daily Location Total');
+  tableFunctions.addToRow();
 
-/* Render the store rows */
-for(var i = 0; i < patStores.length; i++) {
-  patStores[i].addToTable();
-}
+  // Append to table
+  tableFunctions.addToTable();
+};
 
-function renderTotal() {
-/* Render Total row */
+// Body Data
+var renderBody = function() {
+  for(var i = 0; i < cookieStands.length; i++) {
+    cookieStands[i].renderAll();
+  }
+};
+
+// Footer
+var renderFooter = function() {
+  tableFunctions.createRow();
+  rowElement.id = 'theTotes';
+  staffRowElement.id = 'staffTheTotes';
+  // the word "Total"
+  tableFunctions.createData('Total', 'Total');
+  tableFunctions.addToRow();
+
+  // The data for totals
+  var total = 0;
+  var staffTotal = 0;
   var finalTotal = 0;
   var staffFinalTotal = 0;
-  // The word 'Totals'
-  var tableElement = document.getElementById(tableName);
-  var staffTableElement = document.getElementById('staff_data');
-  var rowElement = document.createElement('tr');
-  rowElement.id = 'theTotes';
-  var staffRowElement = document.createElement('tr');
-  staffRowElement.id = 'staffTheTotes';
-  var dataElement = document.createElement('td');
-  var staffDataElement = document.createElement('td');
-  dataElement.textContent = 'Totals';
-  staffDataElement.textContent = 'Totals';
-  rowElement.appendChild(dataElement);
-  staffRowElement.appendChild(staffDataElement);
-  tableElement.appendChild(rowElement);
-  staffTableElement.appendChild(staffRowElement);
-
-  // The data for total
-  for(i = 0; i < hours.length; i++) {
-    dataElement = document.createElement('td');
-    staffDataElement = document.createElement('td');
-    dataElement.className = 'totals';
-    staffDataElement.className = 'totals';
-    var totalCookiesPerHour = 0;
-    var totalCookieTossersPerHour = 0;
-    for (var j = 0; j < patStores.length; j++) {
-      totalCookiesPerHour += patStores[j].totalCookies[i];
-      totalCookieTossersPerHour += patStores[j].totalTossers[i];
+  for(var i = 0; i < hours.length; i++) {
+    for(var j = 0; j < cookieStands.length; j++) {
+      currentStore = cookieStands[j];
+      total += currentStore.totalCookiesPerHour[i];
+      staffTotal += currentStore.totalTossersPerHour[i];
     }
-    dataElement.textContent = totalCookiesPerHour;
-    staffDataElement.textContent = totalCookieTossersPerHour;
-    rowElement.appendChild(dataElement);
-    staffRowElement.appendChild(staffDataElement);
-    tableElement.appendChild(rowElement);
-    staffTableElement.appendChild(staffRowElement);
-    finalTotal += totalCookiesPerHour;
-    staffFinalTotal += totalCookieTossersPerHour;
+    tableFunctions.createData(total, staffTotal);
+    dataElement.className = 'daily_location_total';
+    staffDataElement.className = 'daily_location_total';
+    tableFunctions.addToRow();
+    finalTotal += total;
+    staffFinalTotal += staffTotal;
+    total = 0;
+    staffTotal = 0;
   }
 
-  // The Final Total
-  dataElement = document.createElement('td');
-  staffDataElement = document.createElement('td');
+
+  // The final total
+  tableFunctions.createData(finalTotal, staffFinalTotal);
   dataElement.id = 'final_total';
   staffDataElement.id = 'final_total';
-  dataElement.textContent = finalTotal + ' cookies';
-  staffDataElement.textContent = staffFinalTotal + ' Tossers';
-  rowElement.appendChild(dataElement);
-  staffRowElement.appendChild(staffDataElement);
-  tableElement.appendChild(rowElement);
-  staffTableElement.appendChild(staffRowElement);
+  tableFunctions.addToRow();
+
+  tableFunctions.addToTable();
+};
+
+// Check to see if form is being used to update existing store
+function updatingCheck(location) {
+  for(var i = 0; i < cookieStands.length; i++) {
+    if (location === cookieStands[i].name) {
+      return cookieStands[i];
+    }
+  }
+  return false;
 }
 
-renderTotal();
+renderHeader();
+renderBody();
+renderFooter();
 
 // Event Handlers
 function handleFormSubmit(event) {
@@ -288,10 +240,9 @@ function handleFormSubmit(event) {
   var maxCustomer = short.max_customer.value;
   var avgCookie = short.avg_cookie.value;
 
+  // get totals row
   var totalRow = document.getElementById('theTotes');
   var staffTotalRow = document.getElementById('staffTheTotes');
-  var tableElement = document.getElementById(tableName);
-  var staffTableElement = document.getElementById(staffTableName);
 
   event.preventDefault(); // gotta have it for this purpose. prevents page reload on a 'submit' event
 
@@ -310,87 +261,82 @@ function handleFormSubmit(event) {
     return alert('Please enter decimal values for average cookie sales.');
   }
 
-  // Check if updating
-  if (updatingCheck(location)) {
-    var numberData = 0;
-    var updateStore = document.getElementById(location); //Get cookie row to be updated
-    var staffUpdateStore = document.getElementById('staff ' + location); //Get staff row to be updated
-    updateStore.innerHTML = '';
-    staffUpdateStore.innerHTML = '';
-    dataElement = document.createElement('td');
-    staffDataElement = document.createElement('td');
-    var theStore;
-    for(var i = 0; i < patStores.length; i++) {
-      if (location === patStores[i].name) {
-        theStore = patStores[i];
-        i = patStores.length; //break
+  // remove totals row
+  tableElement.removeChild(totalRow);
+  staffTableElement.removeChild(staffTotalRow);
+
+  var standBeingUpdated;
+  // Check if user is updating
+  if (standBeingUpdated = updatingCheck(location)) {
+
+    // Update stand object
+    standBeingUpdated.minCust = parseInt(minCustomer);
+    standBeingUpdated.maxCust = parseInt(maxCustomer);
+    standBeingUpdated.avgCookie = parseFloat(avgCookie);
+    standBeingUpdated.totalCookiesPerHour = [];
+    standBeingUpdated.totalTossersPerHour = [];
+
+    // Get row being updated
+    var rowBeingUpdated = document.getElementById(standBeingUpdated.name);
+    var staffRowBeingUpdated = document.getElementById('staff' + standBeingUpdated.name);
+
+    // Clear row
+    rowBeingUpdated.innerHTML = '';
+    staffRowBeingUpdated.innerHTML = '';
+
+    // Add new data to row
+    // Location
+    tableFunctions.createData(standBeingUpdated.name, standBeingUpdated.name);
+    rowBeingUpdated.appendChild(dataElement);
+    staffRowBeingUpdated.appendChild(staffDataElement);
+
+    // Data
+    for(var i = 0; i < hours.length; i++) {
+      standBeingUpdated.customerCount[i] = standBeingUpdated.generateRandom();
+      var newData = avgCookie * standBeingUpdated.customerCount[i];
+      var staffNewData = Math.ceil(standBeingUpdated.customerCount[i] / 2);
+
+      // Min of two employees
+      if (staffNewData < 2) {
+        staffNewData = 2;
       }
+
+      standBeingUpdated.totalCookiesPerHour.push(newData);
+      standBeingUpdated.totalTossersPerHour.push(staffNewData);
+      tableFunctions.createData(newData, staffNewData);
+      rowBeingUpdated.appendChild(dataElement);
+      staffRowBeingUpdated.appendChild(staffDataElement);
+
     }
 
-    theStore.minCust = parseInt(minCustomer);
-    theStore.maxCust = parseInt(maxCustomer);
-    theStore.avgCookie = parseFloat(avgCookie);
-    createData(location);
-    updateStore.appendChild(dataElement);
-    staffUpdateStore.appendChild(staffDataElement);
-    for (i = 0; i < theStore.hoursOpen; i++) {
-      theStore.customerCount[i] = theStore.generateRandom();
-      numberData = theStore.customerCount[i] * theStore.avgCookie;
-      dataElement = document.createElement('td');
-      staffDataElement = document.createElement('td');
-      dataElement.textContent = Math.round(numberData);
-      updateStore.appendChild(dataElement);
-      theStore.totalCookies[i] = numberData;
-      theStore.totalTossers[i] = Math.round(theStore.customerCount[i] / 20);
-      staffDataElement.textContent = theStore.totalTossers[i];
-      if (theStore.totalTossers[i] < 2) {
-        theStore.totalTossers[i] = 2;
-        staffDataElement.textContent = 2;
-      }
-      staffUpdateStore.appendChild(staffDataElement);
+    // Total
+    var total = 0;
+    var staffTotal = 0;
+    for(i = 0; i < hours.length; i++) {
+      total += standBeingUpdated.totalCookiesPerHour[i];
+      staffTotal += standBeingUpdated.totalTossersPerHour[i];
     }
-    dataElement = document.createElement('td');
-    staffDataElement = document.createElement('td');
-    dataElement.id = 'daily_location_total';
-    staffDataElement.id = 'daily_location_total';
-    dataElement.textContent = theStore.getCookieSum() + ' cookies';
-    staffDataElement.textContent = theStore.getStaffSum() + ' tossers';
-    updateStore.appendChild(dataElement);
-    staffUpdateStore.appendChild(staffDataElement);
+    tableFunctions.createData(total, staffTotal);
+    rowBeingUpdated.appendChild(dataElement);
+    staffRowBeingUpdated.appendChild(staffDataElement);
 
-    totalRow = document.getElementById('theTotes');
-    staffTotalRow = document.getElementById('staffTheTotes');
-    tableElement = document.getElementById(tableName);
-    staffTableElement = document.getElementById(staffTableName);
+  } else { // adding
 
-    tableElement.removeChild(totalRow);
-    staffTableElement.removeChild(staffTotalRow);
-
-  } else {
     // Instantiate and add to global object
-    patStores.push(new Store(short.location.value,'Beta', parseInt(short.min_customer.value),
-    parseInt(short.max_customer.value), parseFloat(short.avg_cookie.value), 6, 20));
-
-    totalRow = document.getElementById('theTotes');
-    staffTotalRow = document.getElementById('staffTheTotes');
-    tableElement = document.getElementById(tableName);
-    staffTableElement = document.getElementById(staffTableName);
-
-    tableElement.removeChild(totalRow);
-    staffTableElement.removeChild(staffTotalRow);
+    cookieStands.push(new CookieStand(short.location.value, 'beta', parseInt(short.min_customer.value),
+    parseInt(short.max_customer.value), parseFloat(short.avg_cookie.value)));
 
     // Add new store
-    patStores[patStores.length - 1].addToTable();
+    cookieStands[cookieStands.length - 1].renderAll();
+
   }
 
   // Recalculate total
-  renderTotal();
+  renderFooter();
 
   // Reset form
   storeForm.reset();
-
 }
 
 // Event Listeners
 storeForm.addEventListener('submit', handleFormSubmit);
-// 390
